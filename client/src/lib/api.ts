@@ -9,10 +9,17 @@ export class ApiError extends Error {
   }
 }
 
+function extractErrorMessage(body: unknown): string | null {
+  if (!body || typeof body !== "object") return null;
+  const { error, details } = body as { error?: string; details?: Record<string, string[]> };
+  const firstDetail = details && Object.values(details).flat()[0];
+  return firstDetail ?? error ?? null;
+}
+
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
     const body = await response.json().catch(() => null);
-    throw new ApiError(response.status, body?.error ?? "Request failed");
+    throw new ApiError(response.status, extractErrorMessage(body) ?? "Request failed");
   }
   return response.json();
 }

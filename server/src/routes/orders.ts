@@ -16,7 +16,10 @@ const createOrderSchema = z.object({
   term: z.enum(TERMS),
   amount: z
     .string()
-    .regex(/^\d+(\.\d{1,2})?$/, "Amount must be a decimal string with up to 2 decimal places")
+    .regex(
+      /^\d{1,16}(\.\d{1,2})?$/,
+      "Amount must be a decimal string with up to 16 digits and 2 decimal places",
+    )
     .refine((value) => Number(value) > 0, "Amount must be greater than 0"),
   side: z.enum(["buy", "sell"]),
   idempotencyKey: z.string().min(1).max(255),
