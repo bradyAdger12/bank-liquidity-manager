@@ -96,13 +96,13 @@ async function confirmOrder() {
         placeholder="0.00"
         class="input input-bordered"
       />
-      <span class="label-text-alt text-base-content/60 mt-1">
+      <span class="field-hint">
         Enter digits only, no commas (e.g. 10000.50)
       </span>
     </label>
 
-    <p v-if="error" class="text-error text-sm">{{ error }}</p>
-    <p v-if="successMessage" class="text-success text-sm">{{ successMessage }}</p>
+    <p v-if="error" class="alert-banner-error">{{ error }}</p>
+    <p v-if="successMessage" class="alert-banner-success">{{ successMessage }}</p>
 
     <button type="submit" class="btn btn-primary" :disabled="isSubmitting">
       {{ isSubmitting ? "Placing order..." : "Place order" }}

@@ -1,3 +1,95 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ------------------------------------------------------------------
+ * Fonts
+ * Loaded from Google Fonts in index.html. Headings use Plus Jakarta
+ * Sans, everything else uses Inter.
+ * ---------------------------------------------------------------- */
+
+@layer base {
+  body {
+    @apply font-sans;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading;
+  }
+}
+
+/* ------------------------------------------------------------------
+ * Design system
+ * See STYLEGUIDE.md for usage. Component classes below compose
+ * existing daisyui/Tailwind utilities so markup stays declarative.
+ * ---------------------------------------------------------------- */
+
+@layer components {
+  /* Typography */
+  .page-title {
+    @apply text-2xl font-semibold tracking-tight text-base-content;
+  }
+
+  .section-title {
+    @apply text-base font-semibold text-base-content;
+  }
+
+  .field-hint {
+    @apply text-sm text-base-content/60 mt-1;
+  }
+
+  /* Alert banners (inline, non-dismissible) */
+  .alert-banner {
+    @apply flex items-start gap-2 rounded-lg border px-3 py-2 text-sm leading-snug;
+  }
+
+  .alert-banner-warning {
+    @apply alert-banner bg-warning/10 border-warning/30 text-warning-content;
+  }
+
+  .alert-banner-error {
+    @apply alert-banner bg-error/10 border-error/30 text-error;
+  }
+
+  .alert-banner-success {
+    @apply alert-banner bg-success/10 border-success/30 text-success;
+  }
+}
+
+/* ------------------------------------------------------------------
+ * Focus states
+ * daisyui's default .input/.select/.textarea/.btn focus style is a
+ * blocky 2px outline offset from the border, which reads as a double
+ * ring. Replace it with a single soft ring that sits flush against
+ * the control, colored with `secondary` (not `primary`, which is
+ * reserved for CTAs) so focus indication stays visually distinct from
+ * call-to-action buttons. Written unlayered so it reliably wins
+ * against daisyui's same-specificity rules regardless of @layer
+ * ordering.
+ * ---------------------------------------------------------------- */
+
+.input,
+.select,
+.textarea {
+  border-color: oklch(var(--bc) / 0.15);
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.input:focus,
+.input:focus-within,
+.select:focus,
+.textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px oklch(var(--s) / 0.18);
+  border-color: oklch(var(--s));
+}
+
+.btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px oklch(var(--s) / 0.18);
+}

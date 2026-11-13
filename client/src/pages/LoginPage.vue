@@ -28,7 +28,7 @@ async function handleSubmit() {
   <div class="flex justify-center items-center min-h-[60vh]">
     <form class="card w-full max-w-sm bg-base-100 shadow-md" @submit.prevent="handleSubmit">
       <div class="card-body gap-4">
-        <h2 class="card-title">Login</h2>
+        <h2 class="section-title">Login</h2>
 
         <label class="form-control">
           <span class="label-text">Email</span>
@@ -40,7 +40,7 @@ async function handleSubmit() {
           <input v-model="password" type="password" class="input input-bordered" required />
         </label>
 
-        <p v-if="error" class="text-error text-sm">{{ error }}</p>
+        <p v-if="error" class="alert-banner-error">{{ error }}</p>
 
         <button type="submit" class="btn btn-primary" :disabled="isSubmitting">
           {{ isSubmitting ? "Logging in..." : "Login" }}

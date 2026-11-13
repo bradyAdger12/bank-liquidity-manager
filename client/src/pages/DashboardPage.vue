@@ -42,40 +42,42 @@ onMounted(async () => {
 
 <template>
   <div class="p-6 space-y-4">
-    <h1 class="text-2xl font-semibold">Dashboard</h1>
+    <h1 class="page-title">Dashboard</h1>
 
     <div class="card bg-base-100 border border-base-200 shadow-sm">
       <div class="card-body">
-        <h2 class="card-title text-lg">Treasury Yield Curve</h2>
-        <p v-if="fetchedAt" class="text-base-content/60 text-sm">
+        <h2 class="section-title">Treasury Yield Curve</h2>
+        <p v-if="fetchedAt" class="field-hint">
           Last updated: {{ localFormatter.format(fetchedAt) }} ({{ easternFormatter.format(fetchedAt) }})
         </p>
-        <p class="text-warning-content bg-warning/20 border border-warning/40 rounded-md px-3 py-2 text-sm">
+        <p class="alert-banner-warning">
           Treasury updates these yields at 4:15pm Eastern, Monday–Friday. If loaded before then, the curve
           may reflect the prior day's rates.
         </p>
-        <p v-if="error" class="text-error">{{ error }}</p>
+        <p v-if="error" class="alert-banner-error">{{ error }}</p>
         <YieldCurveChart v-else-if="curve" :curve="curve" />
         <p v-else class="text-base-content/60">Loading…</p>
       </div>
     </div>
 
-    <div class="card bg-base-100 border border-base-200 shadow-sm max-w-sm">
-      <div class="card-body">
-        <h2 class="card-title text-lg">Place Order</h2>
-        <OrderForm
-          v-if="curve"
-          :terms="curve.points.map((p) => p.term)"
-          @placed="ordersList?.reload()"
-        />
-        <p v-else class="text-base-content/60">Loading…</p>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
+      <div class="card bg-base-100 border border-base-200 shadow-sm lg:col-span-1">
+        <div class="card-body">
+          <h2 class="section-title">Place Order</h2>
+          <OrderForm
+            v-if="curve"
+            :terms="curve.points.map((p) => p.term)"
+            @placed="ordersList?.reload()"
+          />
+          <p v-else-if="!error" class="text-base-content/60">Loading…</p>
+        </div>
       </div>
-    </div>
 
-    <div class="card bg-base-100 border border-base-200 shadow-sm">
-      <div class="card-body">
-        <h2 class="card-title text-lg">Orders</h2>
-        <OrdersList ref="ordersList" />
+      <div class="card bg-base-100 border border-base-200 shadow-sm lg:col-span-2">
+        <div class="card-body">
+          <h2 class="section-title">Orders</h2>
+          <OrdersList ref="ordersList" />
+        </div>
       </div>
     </div>
   </div>

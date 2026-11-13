@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-3">
-    <p v-if="error" class="text-error text-sm">{{ error }}</p>
+    <p v-if="error" class="alert-banner-error">{{ error }}</p>
 
     <div v-else class="overflow-x-auto">
       <table class="table">
