@@ -4,8 +4,6 @@
 
 /* ------------------------------------------------------------------
  * Fonts
- * Loaded from Google Fonts in index.html. Headings use Plus Jakarta
- * Sans, everything else uses Inter.
  * ---------------------------------------------------------------- */
 
 @layer base {
@@ -25,8 +23,6 @@
 
 /* ------------------------------------------------------------------
  * Design system
- * See STYLEGUIDE.md for usage. Component classes below compose
- * existing daisyui/Tailwind utilities so markup stays declarative.
  * ---------------------------------------------------------------- */
 
 @layer components {
@@ -63,14 +59,10 @@
 
 /* ------------------------------------------------------------------
  * Focus states
- * daisyui's default .input/.select/.textarea/.btn focus style is a
- * blocky 2px outline offset from the border, which reads as a double
- * ring. Replace it with a single soft ring that sits flush against
- * the control, colored with `secondary` (not `primary`, which is
- * reserved for CTAs) so focus indication stays visually distinct from
- * call-to-action buttons. Written unlayered so it reliably wins
- * against daisyui's same-specificity rules regardless of @layer
- * ordering.
+ * daisyui's default focus style is a blocky 2px outline offset from
+ * the border. Replace it with just a border-color change (no glow/
+ * ring box-shadow), tinted `secondary` (not `primary`, which is
+ * reserved for CTAs).
  * ---------------------------------------------------------------- */
 
 .input,
@@ -85,11 +77,11 @@
 .select:focus,
 .textarea:focus {
   outline: none;
-  box-shadow: 0 0 0 3px oklch(var(--s) / 0.18);
+  box-shadow: none;
   border-color: oklch(var(--s));
 }
 
 .btn:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px oklch(var(--s) / 0.18);
+  box-shadow: none;
 }
