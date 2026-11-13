@@ -32,7 +32,7 @@ async function handleSubmit() {
 
         <label class="form-control">
           <span class="label-text">Email</span>
-          <input v-model="email" type="text" class="input input-bordered" required />
+          <input v-model="email" type="email" class="input input-bordered" required />
         </label>
 
         <label class="form-control">

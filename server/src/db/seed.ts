@@ -8,7 +8,7 @@ async function main() {
 
   await db
     .insert(users)
-    .values({ email: "admin", hashedPassword })
+    .values({ email: "test@gmail.com", hashedPassword })
     .onConflictDoNothing({ target: users.email });
 
   console.log("Seeded admin user");

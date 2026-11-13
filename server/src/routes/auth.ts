@@ -11,7 +11,7 @@ import { asyncHandler } from "../middleware/asyncHandler.js";
 export const authRouter = Router();
 
 const loginSchema = z.object({
-  email: z.string().min(1),
+  email: z.string().email(),
   password: z.string().min(1),
 });
 

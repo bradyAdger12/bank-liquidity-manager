@@ -29,12 +29,12 @@ Take Home Prompt: You are working with a bank that needs to manage its liquidity
 
 ```bash
 npm install
-
 cp server/.env.example server/.env
-
-npm run db:up        # starts postgres + redis containers
-npm run db:generate   # generate drizzle migrations from server/src/db/schema.ts
-npm run db:migrate    # apply migrations
-
+npm run db:up         # starts postgres + redis containers + migrate + seed
 npm run dev           # runs server (3001) and client (5173) together
 ```
+
+Login with the seeded user:
+
+- Email: `test@gmail.com`
+- Password: `admin`
