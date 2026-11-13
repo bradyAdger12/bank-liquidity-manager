@@ -10,6 +10,13 @@ Take Home Prompt: You are working with a bank that needs to manage its liquidity
 - Allows the user to submit an order for a specific term and amount
 - Displays the user's historical order submissions
 
+## Out of scope
+
+1. Token revocation - We are using JWT with no mechanism for revoking tokens
+2. Multitenancy - There is just a single user with no associated team
+3. Secret management - `JWT_SECRET` is a hardcoded dev placeholder (`server/.env.example`); a real deployment needs a securely generated secret pulled from a proper secret store, not committed to the repo
+4. Refresh tokens - the JWT is issued once at login with a fixed 24h expiry; there's no refresh token flow to extend a session without re-authenticating
+
 ## Stack
 
 - `client/` — Vue 3, Vite, TypeScript, Tailwind CSS, DaisyUI, Plotly
