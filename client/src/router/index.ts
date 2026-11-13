@@ -8,7 +8,7 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: "/", name: "home", component: HomePage },
-    { path: "/login", name: "login", component: LoginPage },
+    { path: "/login", name: "login", component: LoginPage, meta: { guestOnly: true } },
     { path: "/dashboard", name: "dashboard", component: DashboardPage, meta: { requiresAuth: true } },
   ],
 });
@@ -16,6 +16,9 @@ const router = createRouter({
 router.beforeEach((to) => {
   if (to.meta.requiresAuth && !isAuthenticated()) {
     return { name: "login" };
+  }
+  if (to.meta.guestOnly && isAuthenticated()) {
+    return { name: "dashboard" };
   }
 });
 
