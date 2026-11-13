@@ -21,7 +21,7 @@
           </tr>
           <tr v-for="order in orders" :key="order.id">
             <td>{{ order.term }}</td>
-            <td>${{ order.amount }}</td>
+            <td>${{ formatAmount(order.amount) }}</td>
             <td>{{ order.yieldPercent }}%</td>
             <td>{{ order.userEmail }}</td>
           </tr>
@@ -38,6 +38,7 @@ import { computed, onMounted, ref, watch } from "vue";
 import type { OrderWithUser } from "shared";
 import { listOrders } from "../lib/orders";
 import { ApiError } from "../lib/api";
+import { formatAmount } from "../lib/util";
 import Pagination from "./Pagination.vue";
 
 const PAGE_SIZE = 10;

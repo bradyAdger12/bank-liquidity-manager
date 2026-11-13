@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { ORDER_AMOUNT_PATTERN, type Order } from "shared";
 import { createOrder } from "../lib/orders";
 import { ApiError } from "../lib/api";
+import { formatAmount } from "../lib/util";
 
 const props = defineProps<{ terms: string[] }>();
 const emit = defineEmits<{ placed: [order: Order] }>();
@@ -18,12 +19,6 @@ const isSubmitting = ref(false);
 const confirmDialog = ref<HTMLDialogElement | null>(null);
 const confirmText = ref("");
 const isConfirmed = () => confirmText.value.trim().toLowerCase() === CONFIRM_WORD;
-
-function formatAmount(value: string): string {
-  const [integerPart, decimalPart = ""] = value.split(".");
-  const withCommas = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  return `${withCommas}.${decimalPart.padEnd(2, "0").slice(0, 2)}`;
-}
 
 function validate(): string | null {
   if (!term.value) return "Select a term";
@@ -64,7 +59,7 @@ async function confirmOrder() {
       side: "buy",
       idempotencyKey: crypto.randomUUID(),
     });
-    successMessage.value = `Order placed: ${order.term} for $${order.amount}`;
+    successMessage.value = `Order placed: ${order.term} for $${formatAmount(order.amount)}`;
     term.value = "";
     amount.value = "";
     emit("placed", order);
