@@ -4,10 +4,12 @@ import type { YieldCurve } from "shared";
 import { getYieldCurve } from "../lib/yields";
 import YieldCurveChart from "../components/YieldCurveChart.vue";
 import OrderForm from "../components/OrderForm.vue";
+import OrdersList from "../components/OrdersList.vue";
 
 const curve = ref<YieldCurve | null>(null);
 const error = ref<string | null>(null);
 const fetchedAt = ref<Date | null>(null);
+const ordersList = ref<InstanceType<typeof OrdersList> | null>(null);
 
 const localFormatter = new Intl.DateTimeFormat('en-US', {
   year: "numeric",
@@ -61,8 +63,19 @@ onMounted(async () => {
     <div class="card bg-base-100 border border-base-200 shadow-sm max-w-sm">
       <div class="card-body">
         <h2 class="card-title text-lg">Place Order</h2>
-        <OrderForm v-if="curve" :terms="curve.points.map((p) => p.term)" />
+        <OrderForm
+          v-if="curve"
+          :terms="curve.points.map((p) => p.term)"
+          @placed="ordersList?.reload()"
+        />
         <p v-else class="text-base-content/60">Loading…</p>
+      </div>
+    </div>
+
+    <div class="card bg-base-100 border border-base-200 shadow-sm">
+      <div class="card-body">
+        <h2 class="card-title text-lg">Orders</h2>
+        <OrdersList ref="ordersList" />
       </div>
     </div>
   </div>

@@ -1,3 +1,5 @@
+export const ORDER_AMOUNT_PATTERN = /^\d{1,16}(\.\d{1,2})?$/;
+
 export type OrderSide = "buy" | "sell";
 
 export interface Order {
@@ -18,6 +20,11 @@ export interface CreateOrderRequest {
   idempotencyKey: string;
 }
 
+export interface OrderWithUser extends Order {
+  userEmail: string;
+}
+
 export interface OrderListResponse {
-  orders: Order[];
+  orders: OrderWithUser[];
+  total: number;
 }

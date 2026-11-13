@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import type { Order } from "shared";
+import { ORDER_AMOUNT_PATTERN, type Order } from "shared";
 import { createOrder } from "../lib/orders";
 import { ApiError } from "../lib/api";
 
 const props = defineProps<{ terms: string[] }>();
 const emit = defineEmits<{ placed: [order: Order] }>();
 
-const AMOUNT_PATTERN = /^\d{1,16}(\.\d{1,2})?$/;
 const CONFIRM_WORD = "confirm";
 
 const term = ref("");
@@ -29,7 +28,7 @@ function formatAmount(value: string): string {
 function validate(): string | null {
   if (!term.value) return "Select a term";
   if (!amount.value) return "Enter an amount greater than 0";
-  if (!AMOUNT_PATTERN.test(amount.value)) {
+  if (!ORDER_AMOUNT_PATTERN.test(amount.value)) {
     return "Enter a valid amount with up to 16 digits and 2 decimal places";
   }
   if (Number(amount.value) <= 0) return "Enter an amount greater than 0";

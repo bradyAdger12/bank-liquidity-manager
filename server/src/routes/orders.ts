@@ -1,23 +1,36 @@
 import { Router } from "express";
 import { z } from "zod";
-import { and, desc, eq } from "drizzle-orm";
+import { and, count, desc, eq } from "drizzle-orm";
+import type { OrderListResponse } from "shared";
+import { ORDER_AMOUNT_PATTERN } from "shared";
 import { db } from "../db/client.js";
-import { orders } from "../db/schema.js";
+import { orders, users } from "../db/schema.js";
 import { requireAuth } from "../middleware/requireAuth.js";
 import { asyncHandler } from "../middleware/asyncHandler.js";
 import { AppError } from "../lib/errors.js";
+import { redis } from "../lib/redis.js";
 import { TERM_YEARS, getYieldCurve } from "../services/treasury.js";
 
 export const ordersRouter = Router();
 
 const TERMS = Object.keys(TERM_YEARS) as [string, ...string[]];
 
+const LIST_CACHE_PREFIX = "orders:list";
+const LIST_CACHE_TTL_SECONDS = 15;
+
+async function invalidateListCache(): Promise<void> {
+  const keys = await redis.keys(`${LIST_CACHE_PREFIX}:*`);
+  if (keys.length > 0) {
+    await redis.del(...keys);
+  }
+}
+
 const createOrderSchema = z.object({
   term: z.enum(TERMS),
   amount: z
     .string()
     .regex(
-      /^\d{1,16}(\.\d{1,2})?$/,
+      ORDER_AMOUNT_PATTERN,
       "Amount must be a decimal string with up to 16 digits and 2 decimal places",
     )
     .refine((value) => Number(value) > 0, "Amount must be greater than 0"),
@@ -57,6 +70,7 @@ ordersRouter.post(
         .insert(orders)
         .values({ userId, term, amount, side, yieldPercent: point.yieldPercent.toFixed(3), idempotencyKey })
         .returning();
+      await invalidateListCache();
       res.status(201).json(order);
     } catch (err) {
       if (!isUniqueViolation(err)) throw err;
@@ -84,13 +98,36 @@ ordersRouter.get(
     const limit = parsed.data.limit ?? 20;
     const offset = parsed.data.offset ?? 0;
 
-    const page = await db
-      .select()
-      .from(orders)
-      .orderBy(desc(orders.createdAt), desc(orders.id))
-      .limit(limit)
-      .offset(offset);
+    const cacheKey = `${LIST_CACHE_PREFIX}:${limit}:${offset}`;
+    const cached = await redis.get(cacheKey);
+    if (cached) {
+      res.json(JSON.parse(cached) as OrderListResponse);
+      return;
+    }
 
-    res.json({ orders: page });
+    const [page, [{ total }]] = await Promise.all([
+      db
+        .select({
+          id: orders.id,
+          userId: orders.userId,
+          term: orders.term,
+          amount: orders.amount,
+          side: orders.side,
+          yieldPercent: orders.yieldPercent,
+          idempotencyKey: orders.idempotencyKey,
+          createdAt: orders.createdAt,
+          userEmail: users.email,
+        })
+        .from(orders)
+        .innerJoin(users, eq(orders.userId, users.id))
+        .orderBy(desc(orders.createdAt), desc(orders.id))
+        .limit(limit)
+        .offset(offset),
+      db.select({ total: count() }).from(orders),
+    ]);
+
+    const response = { orders: page, total };
+    await redis.set(cacheKey, JSON.stringify(response), "EX", LIST_CACHE_TTL_SECONDS);
+    res.json(response);
   }),
 );
