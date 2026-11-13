@@ -5,7 +5,7 @@ const TREASURY_CSV_URL =
   "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/{year}/all?type=daily_treasury_yield_curve&field_tdr_date_value={year}&page&_format=csv";
 
 const CACHE_KEY = "treasury:yield-curve:latest";
-const CACHE_TTL_SECONDS = 60 * 60; // treasury publishes once per business day
+const CACHE_TTL_SECONDS = 5 * 60;
 
 export const TERM_YEARS: Record<string, number> = {
   "1 Mo": 1 / 12,
@@ -63,7 +63,7 @@ export async function getYieldCurve(): Promise<YieldCurve> {
 
   const year = new Date().getFullYear();
   const url = TREASURY_CSV_URL.replaceAll("{year}", String(year));
-  const response = await fetch(url);
+  const response = await fetch(url, { signal: AbortSignal.timeout(10_000) });
   if (!response.ok) {
     throw new Error(`Treasury API responded with ${response.status}`);
   }
