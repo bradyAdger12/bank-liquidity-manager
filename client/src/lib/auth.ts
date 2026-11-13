@@ -1,4 +1,5 @@
 import { ref } from "vue";
+import { apiFetch } from "./api";
 
 const TOKEN_KEY = "auth_token";
 
@@ -20,19 +21,12 @@ export function clearToken(): void {
 }
 
 export async function login(email: string, password: string): Promise<void> {
-  const response = await fetch("/api/auth/login", {
+  const { token } = await apiFetch<{ token: string }>("/api/auth/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
   });
-
-  if (!response.ok) {
-    const body = await response.json().catch(() => null);
-    throw new Error(body?.error ?? "Login failed");
-  }
-
-  const { token: newToken } = await response.json();
-  setToken(newToken);
+  setToken(token);
 }
 
 export function logout(): void {

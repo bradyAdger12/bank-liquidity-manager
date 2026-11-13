@@ -4,6 +4,7 @@
   "private": true,
   "description": "Vue/Express monorepo scaffold with Drizzle, Postgres, and Redis",
   "workspaces": [
+    "shared",
     "server",
     "client"
   ],

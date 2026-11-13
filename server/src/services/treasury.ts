@@ -1,4 +1,5 @@
 import { redis } from "../lib/redis.js";
+import type { YieldPoint, YieldCurve } from "shared";
 
 const TREASURY_CSV_URL =
   "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/{year}/all?type=daily_treasury_yield_curve&field_tdr_date_value={year}&page&_format=csv";
@@ -22,17 +23,6 @@ export const TERM_YEARS: Record<string, number> = {
   "20 Yr": 20,
   "30 Yr": 30,
 };
-
-export interface YieldPoint {
-  term: string;
-  years: number;
-  yieldPercent: number;
-}
-
-export interface YieldCurve {
-  date: string;
-  points: YieldPoint[];
-}
 
 function parseCsv(csv: string): string[][] {
   return csv
