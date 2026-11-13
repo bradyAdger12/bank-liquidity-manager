@@ -1,8 +1,9 @@
 # UI Style Guide
 
-Tailwind + daisyui, custom theme `liquidity` (see `tailwind.config.js`). Custom
-overrides live in `src/style.css`. Keep markup declarative — prefer the classes
-below over ad hoc utility strings so new UI stays visually consistent.
+Tailwind + daisyui, custom theme `liquidity` (see `client/tailwind.config.js`).
+Custom overrides live in `client/src/style.css`. Keep markup declarative —
+prefer the classes below over ad hoc utility strings so new UI stays visually
+consistent.
 
 ## Color palette
 
@@ -17,7 +18,7 @@ the color loses its meaning.
 
 ## Fonts
 
-Loaded from Google Fonts in `index.html`.
+Loaded from Google Fonts in `client/index.html`.
 
 | Use | Font | Tailwind class |
 | --- | --- | --- |
@@ -94,8 +95,8 @@ in place of bare `text-error` / `text-success` paragraphs:
 
 daisyui's default focus style on `.input`/`.select`/`.textarea`/`.btn` is a
 solid 2px outline offset from the border — it reads as a double ring. This is
-overridden globally in `style.css` to a single soft ring
-(`box-shadow: 0 0 0 3px oklch(var(--s) / 0.18)`) with the border tinted to
+overridden globally in `style.css` to just a border-color change, tinted to
 `secondary` (navy) — not `primary`, so focus indication never gets confused
-with a CTA. No per-component action needed; don't add `focus:outline-none` or
-`focus:ring-*` utilities locally, since the global rule already handles it.
+with a CTA. No glow/ring box-shadow, intentionally. No per-component action
+needed; don't add `focus:outline-none` or `focus:ring-*` utilities locally,
+since the global rule already handles it.
