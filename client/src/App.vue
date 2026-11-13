@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import NavBar from "./components/NavBar.vue";
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center">
-    <h1 class="text-2xl font-semibold">Bank Liquidity Manager</h1>
-  </div>
+  <NavBar />
+  <router-view />
 </template>

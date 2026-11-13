@@ -16,6 +16,8 @@ Take Home Prompt: You are working with a bank that needs to manage its liquidity
 2. Multitenancy - There is just a single user with no associated team
 3. Secret management - `JWT_SECRET` is a hardcoded dev placeholder (`server/.env.example`); a real deployment needs a securely generated secret pulled from a proper secret store, not committed to the repo
 4. Refresh tokens - the JWT is issued once at login with a fixed 24h expiry; there's no refresh token flow to extend a session without re-authenticating
+5. Mobile responsiveness - the UI targets desktop only
+6. Token storage hardening - the JWT is stored in `localStorage`, which is readable by any script on the page (XSS risk); an httpOnly cookie would avoid that but requires CSRF protection and backend session-cookie handling not built here
 
 ## Stack
 
