@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { verifyAuthToken } from "../lib/jwt.js";
+import { AppError } from "../lib/errors.js";
 
 declare module "express-serve-static-core" {
   interface Request {
@@ -7,13 +8,12 @@ declare module "express-serve-static-core" {
   }
 }
 
-export function requireAuth(req: Request, res: Response, next: NextFunction) {
+export function requireAuth(req: Request, _res: Response, next: NextFunction) {
   const header = req.headers.authorization;
   const token = header?.startsWith("Bearer ") ? header.slice("Bearer ".length) : undefined;
 
   if (!token) {
-    res.status(401).json({ error: "Unauthorized" });
-    return;
+    throw new AppError(401, "Unauthorized");
   }
 
   try {
@@ -21,6 +21,6 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
     req.userId = payload.userId;
     next();
   } catch {
-    res.status(401).json({ error: "Unauthorized" });
+    throw new AppError(401, "Unauthorized");
   }
 }
