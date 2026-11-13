@@ -2,6 +2,14 @@
 
 Monorepo skeleton: Vue 3 + Vite + Tailwind/DaisyUI frontend, Express + Drizzle backend, Postgres + Redis via Docker Compose.
 
+## Project scope
+
+Take Home Prompt: You are working with a bank that needs to manage its liquidity. Build a simple full stack application that:
+- Pulls data on treasury yields
+- Plots the yield curve back to the user
+- Allows the user to submit an order for a specific term and amount
+- Displays the user's historical order submissions
+
 ## Stack
 
 - `client/` — Vue 3, Vite, TypeScript, Tailwind CSS, DaisyUI, Plotly
