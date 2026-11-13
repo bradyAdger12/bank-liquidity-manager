@@ -3,6 +3,7 @@ import { isAuthenticated } from "../lib/auth";
 import HomePage from "../pages/HomePage.vue";
 import LoginPage from "../pages/LoginPage.vue";
 import DashboardPage from "../pages/DashboardPage.vue";
+import NotFoundPage from "../pages/NotFoundPage.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -10,6 +11,7 @@ const router = createRouter({
     { path: "/", name: "home", component: HomePage },
     { path: "/login", name: "login", component: LoginPage, meta: { guestOnly: true } },
     { path: "/dashboard", name: "dashboard", component: DashboardPage, meta: { requiresAuth: true } },
+    { path: "/:pathMatch(.*)*", name: "not-found", component: NotFoundPage },
   ],
 });
 
