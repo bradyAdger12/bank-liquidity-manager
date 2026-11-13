@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import { authRouter } from "./routes/auth.js";
 import { yieldsRouter } from "./routes/yields.js";
+import { ordersRouter } from "./routes/orders.js";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
 
 const app = express();
@@ -14,6 +15,7 @@ app.use(express.json());
 app.get("/api/health", (_req, res) => res.json({ status: "ok" }));
 app.use("/api/auth", authRouter);
 app.use("/api/yields", yieldsRouter);
+app.use("/api/orders", ordersRouter);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
