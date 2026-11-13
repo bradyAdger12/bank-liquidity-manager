@@ -15,6 +15,13 @@
       "when": 1794587989105,
       "tag": "0001_moaning_iron_fist",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794589991407,
+      "tag": "0002_abandoned_marvel_apes",
+      "breakpoints": true
     }
   ]
 }

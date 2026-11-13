@@ -19,6 +19,7 @@ export const orders = pgTable(
     term: varchar("term", { length: 32 }).notNull(),
     amount: numeric("amount", { precision: 18, scale: 2 }).notNull(),
     side: varchar("side", { length: 4 }).notNull(),
+    yieldPercent: numeric("yield_percent", { precision: 5, scale: 3 }).notNull(),
     idempotencyKey: varchar("idempotency_key", { length: 255 }).notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },

@@ -6,7 +6,7 @@ import { orders } from "../db/schema.js";
 import { requireAuth } from "../middleware/requireAuth.js";
 import { asyncHandler } from "../middleware/asyncHandler.js";
 import { AppError } from "../lib/errors.js";
-import { TERM_YEARS } from "../services/treasury.js";
+import { TERM_YEARS, getYieldCurve } from "../services/treasury.js";
 
 export const ordersRouter = Router();
 
@@ -14,7 +14,10 @@ const TERMS = Object.keys(TERM_YEARS) as [string, ...string[]];
 
 const createOrderSchema = z.object({
   term: z.enum(TERMS),
-  amount: z.number().positive(),
+  amount: z
+    .string()
+    .regex(/^\d+(\.\d{1,2})?$/, "Amount must be a decimal string with up to 2 decimal places")
+    .refine((value) => Number(value) > 0, "Amount must be greater than 0"),
   side: z.enum(["buy", "sell"]),
   idempotencyKey: z.string().min(1).max(255),
 });
@@ -40,10 +43,16 @@ ordersRouter.post(
     const userId = req.userId!;
     const { term, amount, side, idempotencyKey } = parsed.data;
 
+    const curve = await getYieldCurve();
+    const point = curve.points.find((p) => p.term === term);
+    if (!point) {
+      throw new AppError(502, "Unable to determine current yield for term");
+    }
+
     try {
       const [order] = await db
         .insert(orders)
-        .values({ userId, term, amount: amount.toFixed(2), side, idempotencyKey })
+        .values({ userId, term, amount, side, yieldPercent: point.yieldPercent.toFixed(3), idempotencyKey })
         .returning();
       res.status(201).json(order);
     } catch (err) {

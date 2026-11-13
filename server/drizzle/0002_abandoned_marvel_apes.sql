@@ -1,0 +1,1 @@
+ALTER TABLE "orders" ADD COLUMN "yield_percent" numeric(5, 3) NOT NULL;

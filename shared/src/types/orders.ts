@@ -6,13 +6,14 @@ export interface Order {
   term: string;
   amount: string;
   side: OrderSide;
+  yieldPercent: string;
   idempotencyKey: string;
   createdAt: string;
 }
 
 export interface CreateOrderRequest {
   term: string;
-  amount: number;
+  amount: string;
   side: OrderSide;
   idempotencyKey: string;
 }
