@@ -1,11 +1,10 @@
-import { redis } from "../lib/redis.js";
+import { cacheGet, cacheSet } from "../lib/redis.js";
 import type { YieldPoint, YieldCurve } from "shared";
 
 const TREASURY_CSV_URL =
   "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/{year}/all?type=daily_treasury_yield_curve&field_tdr_date_value={year}&page&_format=csv";
 
 const CACHE_KEY = "treasury:yield-curve:latest";
-const CACHE_TTL_SECONDS = 5 * 60;
 
 export const TERM_YEARS: Record<string, number> = {
   "1 Mo": 1 / 12,
@@ -56,9 +55,9 @@ function parseLatestRow(csv: string): YieldCurve {
 }
 
 export async function getYieldCurve(): Promise<YieldCurve> {
-  const cached = await redis.get(CACHE_KEY);
+  const cached = await cacheGet<YieldCurve>(CACHE_KEY);
   if (cached) {
-    return JSON.parse(cached) as YieldCurve;
+    return cached;
   }
 
   const year = new Date().getFullYear();
@@ -70,6 +69,6 @@ export async function getYieldCurve(): Promise<YieldCurve> {
   const csv = await response.text();
   const curve = parseLatestRow(csv);
 
-  await redis.set(CACHE_KEY, JSON.stringify(curve), "EX", CACHE_TTL_SECONDS);
+  await cacheSet(CACHE_KEY, curve);
   return curve;
 }

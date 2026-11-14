@@ -8,7 +8,7 @@ import { orders, users } from "../db/schema.js";
 import { requireAuth } from "../middleware/requireAuth.js";
 import { asyncHandler } from "../middleware/asyncHandler.js";
 import { AppError } from "../lib/errors.js";
-import { redis } from "../lib/redis.js";
+import { redis, cacheGet, cacheSet } from "../lib/redis.js";
 import { TERM_YEARS, getYieldCurve } from "../services/treasury.js";
 
 export const ordersRouter = Router();
@@ -16,7 +16,6 @@ export const ordersRouter = Router();
 const TERMS = Object.keys(TERM_YEARS) as [string, ...string[]];
 
 const LIST_CACHE_PREFIX = "orders:list";
-const LIST_CACHE_TTL_SECONDS = 15;
 
 async function invalidateListCache(): Promise<void> {
   const keys = await redis.keys(`${LIST_CACHE_PREFIX}:*`);
@@ -99,9 +98,9 @@ ordersRouter.get(
     const offset = parsed.data.offset ?? 0;
 
     const cacheKey = `${LIST_CACHE_PREFIX}:${limit}:${offset}`;
-    const cached = await redis.get(cacheKey);
+    const cached = await cacheGet<OrderListResponse>(cacheKey);
     if (cached) {
-      res.json(JSON.parse(cached) as OrderListResponse);
+      res.json(cached);
       return;
     }
 
@@ -127,7 +126,7 @@ ordersRouter.get(
     ]);
 
     const response = { orders: page, total };
-    await redis.set(cacheKey, JSON.stringify(response), "EX", LIST_CACHE_TTL_SECONDS);
+    await cacheSet(cacheKey, response);
     res.json(response);
   }),
 );
