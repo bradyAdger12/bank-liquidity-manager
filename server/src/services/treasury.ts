@@ -1,3 +1,4 @@
+import { parse } from "csv-parse/sync";
 import { cacheGet, cacheSet } from "../lib/redis.js";
 import type { YieldPoint, YieldCurve } from "shared";
 
@@ -23,19 +24,13 @@ export const TERM_YEARS: Record<string, number> = {
   "30 Yr": 30,
 };
 
-function parseCsv(csv: string): string[][] {
-  return csv
-    .trim()
-    .split("\n")
-    .map((line) => line.split(",").map((cell) => cell.replace(/^"|"$/g, "").trim()));
-}
-
 function parseLatestRow(csv: string): YieldCurve {
-  const [header, ...rows] = parseCsv(csv);
-  if (!header || rows.length === 0) {
+  const rows: string[][] = parse(csv.trim(), { trim: true });
+  const [header, ...dataRows] = rows;
+  if (!header || dataRows.length === 0) {
     throw new Error("Treasury CSV response was empty");
   }
-  const latest = rows[0];
+  const latest = dataRows[0];
   if (!latest) {
     throw new Error("Treasury CSV response had no data rows");
   }
