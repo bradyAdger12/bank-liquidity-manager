@@ -18,6 +18,7 @@ const isSubmitting = ref(false);
 
 const confirmDialog = ref<HTMLDialogElement | null>(null);
 const confirmText = ref("");
+const idempotencyKey = ref("");
 const isConfirmed = () => confirmText.value.trim().toLowerCase() === CONFIRM_WORD;
 
 function validate(): string | null {
@@ -41,6 +42,7 @@ function handleSubmit() {
   }
 
   confirmText.value = "";
+  idempotencyKey.value = crypto.randomUUID();
   confirmDialog.value?.showModal();
 }
 
@@ -57,7 +59,7 @@ async function confirmOrder() {
       term: term.value,
       amount: amount.value,
       side: "buy",
-      idempotencyKey: crypto.randomUUID(),
+      idempotencyKey: idempotencyKey.value,
     });
     successMessage.value = `Order placed: ${order.term} for $${formatAmount(order.amount)}`;
     term.value = "";
